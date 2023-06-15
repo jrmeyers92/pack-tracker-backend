@@ -12,9 +12,30 @@ const itemSchema = new mongoose.Schema({
   }
 });
 
-const catagorySchema = new mongoose.Schema({
-  catagory_name: String,
-  items: [itemSchema]
+const catagorySchema = new mongoose.Schema(
+  {
+    catagory_name: String,
+    items: [itemSchema]
+  },
+  {
+    toJSON: { virtuals: true }
+  }
+);
+
+// userSchema.virtual('domain').get(function() {
+//   return this.email.slice(this.email.indexOf('@') + 1);
+// });
+
+catagorySchema.virtual('totalPrice').get(function() {
+  return this.items.reduce((accumulator, currentValue) => {
+    return (accumulator += currentValue.price);
+  }, 0);
+});
+
+catagorySchema.virtual('totalWeight').get(function() {
+  return this.items.reduce((accumulator, currentValue) => {
+    return (accumulator += currentValue.weight);
+  }, 0);
 });
 
 // catagorySchema.pre(/^find/, function(next) {
