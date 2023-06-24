@@ -7,7 +7,7 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
-const catagroryRouter = require('./routes/catagoryRoute');
+const gearListRouter = require('./routes/gearListRoute');
 // const globalErrorHandler = require('./controllers/errorController');
 // const gameRouter = require('./routes/gameRoutes');
 // const userRouter = require('./routes/userRoutes');
@@ -68,10 +68,7 @@ app.use((req, res, next) => {
 app.use(compression());
 
 // 3) ROUTES
-// app.use('/api/v1/games', gameRouter);
-// app.use('/api/v1/users', userRouter);
-// app.use('/api/v1/courses', courseRouter);
-app.use('/api/v1/catagories', catagroryRouter);
+app.use('/api/v1/gearlist', gearListRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));

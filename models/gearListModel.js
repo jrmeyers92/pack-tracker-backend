@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const Item = require('./itemModel');
 
 const itemSchema = new mongoose.Schema({
   name: String,
@@ -22,19 +21,40 @@ const catagorySchema = new mongoose.Schema(
   }
 );
 
+const gearListSchema = new mongoose.Schema(
+  {
+    gear: [catagorySchema]
+  },
+  {
+    toJSON: { virtuals: true }
+  }
+);
+
 // userSchema.virtual('domain').get(function() {
 //   return this.email.slice(this.email.indexOf('@') + 1);
 // });
 
-catagorySchema.virtual('totalPrice').get(function() {
+catagorySchema.virtual('totalCatagoryPrice').get(function() {
   return this.items.reduce((accumulator, currentValue) => {
     return (accumulator += currentValue.price);
   }, 0);
 });
 
-catagorySchema.virtual('totalWeight').get(function() {
+catagorySchema.virtual('totalCatagoryWeight').get(function() {
   return this.items.reduce((accumulator, currentValue) => {
     return (accumulator += currentValue.weight);
+  }, 0);
+});
+
+gearListSchema.virtual('totalGearListPrice').get(function() {
+  return this.gear.reduce((accumulator, currentValue) => {
+    return (accumulator += currentValue.totalCatagoryPrice);
+  }, 0);
+});
+
+gearListSchema.virtual('totalGearListWeight').get(function() {
+  return this.gear.reduce((accumulator, currentValue) => {
+    return (accumulator += currentValue.totalCatagoryWeight);
   }, 0);
 });
 
@@ -46,6 +66,6 @@ catagorySchema.virtual('totalWeight').get(function() {
 //   next();
 // });
 
-const Catagory = mongoose.model('Catagory', catagorySchema);
+const GearList = mongoose.model('GearList', gearListSchema);
 
-module.exports = Catagory;
+module.exports = GearList;
